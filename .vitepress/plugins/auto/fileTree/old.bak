@@ -1,0 +1,638 @@
+import {existsSync, statSync} from 'node:fs'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
+import matter from 'gray-matter'
+
+/**
+ * @typedef {import('./types/index.js').FileTreeConfig} FileTreeConfig
+ * @typedef {import('./types/index.js').FileTreeError} FileTreeError
+ * @typedef {import('./types/index.js').TreeNode} TreeNode
+ */
+
+// 获取 __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+/**
+ * @typedef {'file' | 'directory'} NodeType
+ */
+
+/**
+ * @typedef {object} FileStats
+ * @property {number} size - 文件大小
+ * @property {Date} mtime - 修改时间
+ * @property {Date} ctime - 创建时间
+ */
+
+/**
+ * @typedef {object} TreeNode
+ * @property {NodeType} type - 节点类型
+ * @property {string} name - 文件或目录名
+ * @property {string} parent - 父目录路径
+ * @property {object} [frontmatter] - markdown文件的frontmatter
+ * @property {TreeNode[]} [children] - 子节点(仅目录类型)
+ * @property {string} [error] - 错误信息
+ * @property {FileStats} [stats] - 文件统计信息
+ */
+
+/**
+ * @typedef {object} FileTreeConfig
+ * @property {boolean} [debug] - 是否开启调试模式
+ * @property {string} [srcDir] - 源文件目录
+ * @property {string[]} [exclude] - 排除的文件/目录
+ * @property {string[]} [include] - 包含的文件/目录
+ * @property {Array<{include: string[], exclude: string[]}>} [dirs] - 目录配置
+ * @property {{order: object, priority: string[]}} [sorting] - 排序配置
+ * @property {number} [maxDepth] - 最大递归深度
+ * @property {number} [statsPrecision] - 统计精度
+ * @property {number} [concurrency] - 并发处理数量
+ * @property {number} [maxFileSize] - 最大文件大小
+ * @property {number} [memoryLimit] - 内存限制
+ * @property {boolean} [enableCache] - 是否启用缓存
+ */
+
+/**
+ * @class FileTreeError
+ * @extends Error
+ */
+class FileTreeError extends Error {
+  /**
+   * @param {string} message - 错误信息
+   * @param {string} code - 错误代码
+   * @param {object} [details] - 错误详情
+   */
+  constructor(message, code, details = {}) {
+    super(message)
+    this.name = 'FileTreeError'
+    this.code = code
+    this.details = details
+  }
+}
+
+/**
+ * 文件树构建器类
+ */
+export class FileTreeBuilder {
+  /** @type {FileTreeConfig} */
+  #config
+  /** @type {object} */
+  #stats = {start: 0, dirs: 0, files: 0, size: 0, depths: []}
+  /** @type {Map<string, boolean>} */
+  #excludeCache = new Map()
+  /** @type {Map<string, TreeNode>} */
+  #fileCache = new Map()
+  /** @type {AbortController} */
+  #abortController
+  /** @type {number} */
+  #memoryUsage = 0
+  /** @type {number} */
+  #startMemory = 0
+
+  /** @type {FileTreeConfig} */
+  static #DEFAULT_CONFIG = {
+    debug: false,
+    srcDir: process.cwd(),
+    exclude: ['node_modules', '.git', '.vscode'],
+    include: ['.'],
+    dirs: [{include: [], exclude: []}],
+    sorting: {
+      order: {index: 0, guide: 1, custom: 2, dir: 3, file: 4},
+      priority: [],
+    },
+    maxDepth: 10,
+    statsPrecision: 2,
+    concurrency: 5,
+    maxFileSize: 10 * 1024 * 1024, // 10MB
+    memoryLimit: 500 * 1024 * 1024, // 500MB
+    enableCache: true,
+  }
+
+  /**
+   * @param {Partial<FileTreeConfig>} options
+   */
+  constructor(options = {}) {
+    try {
+      this.#abortController = new AbortController()
+      this.#startMemory = process.memoryUsage().heapUsed
+
+      if (options?.srcDir) {
+        options.srcDir = !path.isAbsolute(options.srcDir) ? path.resolve(FileTreeBuilder.#DEFAULT_CONFIG.srcDir, options.srcDir) : options.srcDir
+      }
+
+      this.#config = this.#mergeConfigs(FileTreeBuilder.#DEFAULT_CONFIG, options)
+      this.#validateConfig()
+      this.#validatePaths()
+    } catch (error) {
+      this.#logError('构造函数初始化失败:', error)
+      throw new FileTreeError('初始化失败', 'INIT_ERROR', {originalError: error})
+    }
+  }
+
+  /**
+   * 解析文件内容
+   * @param {fs.Dirent} entry - 文件入口
+   * @param {string} parentPath - 父目录路径
+   * @returns {Promise<TreeNode|null>} 文件节点
+   * @private
+   */
+  async #scanFile(entry, parentPath) {
+    const fullPath = path.join(parentPath, entry.name)
+    this.#logDebug('开始处理文件:', fullPath)
+
+    if (!this.#isMarkdownFile(entry)) {
+      this.#logDebug('跳过非Markdown文件:', entry.name)
+      return null
+    }
+
+    try {
+      // 检查缓存
+      if (this.#config.enableCache && this.#fileCache.has(fullPath)) {
+        return this.#fileCache.get(fullPath)
+      }
+
+      const stats = await fs.stat(fullPath)
+
+      // 检查文件大小
+      if (stats.size > this.#config.maxFileSize) {
+        throw new FileTreeError(`文件过大: ${this.#formatBytes(stats.size)}`, 'FILE_TOO_LARGE', {file: entry.name, size: stats.size})
+      }
+
+      let content = await fs.readFile(fullPath, 'utf-8')
+      const {data: frontmatter} = matter(content)
+      content = null // 释放内存
+
+      this.#logDebug('解析Frontmatter:', Object.keys(frontmatter))
+      this.#updateStats('files', stats.size)
+
+      const node = {
+        type: 'file',
+        name: entry.name,
+        parent: this.#getRelativePath(parentPath),
+        frontmatter,
+        stats: {
+          size: stats.size,
+          mtime: stats.mtime,
+          ctime: stats.ctime,
+        },
+      }
+
+      // 更新缓存
+      if (this.#config.enableCache) {
+        this.#fileCache.set(fullPath, node)
+      }
+
+      return node
+    } catch (error) {
+      return this.#handleError(`文件 ${entry.name}`, error)
+    }
+  }
+
+  /**
+   * 验证配置项
+   * @throws {FileTreeError} 配置无效时抛出错误
+   * @private
+   */
+  #validateConfig() {
+    if (this.#config.maxDepth < 1) {
+      throw new FileTreeError('maxDepth必须大于0', 'INVALID_CONFIG')
+    }
+    if (this.#config.concurrency < 1) {
+      throw new FileTreeError('concurrency必须大于0', 'INVALID_CONFIG')
+    }
+    if (!Array.isArray(this.#config.exclude)) {
+      throw new FileTreeError('exclude必须是数组', 'INVALID_CONFIG')
+    }
+    if (!Array.isArray(this.#config.include)) {
+      throw new FileTreeError('include必须是数组', 'INVALID_CONFIG')
+    }
+  }
+
+  /**
+   * 配置合并
+   * @param {FileTreeConfig} base - 基础配置
+   * @param {Partial<FileTreeConfig>} custom - 自定义配置
+   * @returns {FileTreeConfig} 合并后的配置
+   * @private
+   */
+  #mergeConfigs(base, custom) {
+    const merged = {
+      debug: custom.debug || base.debug,
+      srcDir: custom.srcDir || base.srcDir,
+      include: this.#deduplicateNestedPaths(custom.include || base.include),
+      exclude: [...new Set([...base.exclude, ...(custom.exclude || [])])],
+      dirs: custom.dirs?.length ? custom.dirs : base.dirs,
+      maxDepth: custom.maxDepth || base.maxDepth,
+      statsPrecision: custom.statsPrecision || base.statsPrecision,
+      sorting: {
+        order: {...base.sorting.order, ...custom.sorting?.order},
+        priority: [...new Set([...base.sorting.priority, ...(custom.sorting?.priority || [])])],
+      },
+      concurrency: custom.concurrency || base.concurrency,
+      maxFileSize: custom.maxFileSize || base.maxFileSize,
+      memoryLimit: custom.memoryLimit || base.memoryLimit,
+      enableCache: custom.enableCache || base.enableCache,
+    }
+    merged.dirs.forEach((dir) => {
+      const include = dir.include?.length ? dir.include : merged.include
+      dir.exclude = [...new Set([...merged.exclude, ...(dir.exclude || [])])].filter((item) => !include.some((inc) => item === inc || inc.includes(item)))
+      dir.include = this.#deduplicateNestedPaths(include.map((p) => path.normalize(p)))
+    })
+    return merged
+  }
+
+  /**
+   * 取消正在进行的操作
+   */
+  abort() {
+    this.#abortController.abort()
+  }
+
+  /**
+   * 构建文件树
+   * @returns {Promise<TreeNode[]>} 文件树结构
+   */
+  async build() {
+    try {
+      this.#resetStats()
+      this.#abortController = new AbortController() // 重置abort控制器
+
+      // 使用 Promise.all 并发处理所有目录
+      const results = await Promise.all(
+        this.#config.dirs.flatMap((config) =>
+          config.include.map(async (basePath) => {
+            const absPath = path.resolve(this.#config.srcDir, basePath)
+            const result = await this.#scanDirectory(absPath, config.exclude)
+            return result?.children || []
+          })
+        )
+      )
+
+      const mergedResults = results.flat().filter(Boolean)
+      return this.#printStats(mergedResults)
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        this.#logDebug('操作已取消')
+        return []
+      }
+      this.#logError('构建文件树失败:', error)
+      throw error
+    }
+  }
+
+  /**
+   * 递归处理目录
+   * @param {string} currentPath - 当前处理的目录路径
+   * @param {string[]} exclude - 排除规则
+   * @param {number} depth - 当前递归深度
+   * @returns {Promise<TreeNode>} 目录节点，包含子文件和子目录
+   */
+  async #scanDirectory(currentPath, exclude, depth = 0) {
+    try {
+      this.#logDebug('开始处理目录:', currentPath)
+      this.#updateStats('dirs')
+      this.#stats.depths.push(depth)
+
+      if (depth > this.#config.maxDepth) {
+        throw new FileTreeError(`超过最大递归深度: ${this.#config.maxDepth}`, 'MAX_DEPTH_EXCEEDED', {depth, maxDepth: this.#config.maxDepth})
+      }
+
+      const entries = await fs.readdir(currentPath, {
+        withFileTypes: true,
+        signal: this.#abortController.signal,
+      })
+
+      this.#logDebug('找到条目:', entries.length, '个 (目录:', `${currentPath})`)
+
+      const filtered = entries.filter((entry) => !this.#shouldExclude(path.join(currentPath, entry.name), exclude))
+
+      this.#logDebug('过滤后条目:', filtered.length, '个')
+
+      const children = await this.#scanConcurrently(
+        filtered,
+        (entry) => {
+          this.#logDebug('正在处理:', entry.name)
+          return entry.isDirectory() ? this.#scanDirectory(path.join(currentPath, entry.name), exclude, depth + 1) : this.#scanFile(entry, currentPath)
+        },
+        this.#config.concurrency
+      )
+
+      this.#logDebug('完成目录处理:', currentPath)
+
+      return {
+        type: 'directory',
+        name: path.basename(currentPath),
+        parent: this.#getRelativePath(currentPath),
+        children: this.#sortNodes(children.filter(Boolean)),
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') throw error
+      return this.#handleError(`目录 ${currentPath}`, error)
+    }
+  }
+
+  /**
+   * 并发控制
+   * @param {fs.Dirent[]} entries - 待处理的文件/目录条目
+   * @param {Function} processor - 处理函数
+   * @param {number} concurrency - 并发数量
+   * @returns {Promise<TreeNode[]>} 处理结果数组
+   */
+  async #scanConcurrently(entries, processor, concurrency = 10) {
+    const results = []
+    for (let i = 0; i < entries.length; i += concurrency) {
+      const chunk = entries.slice(i, i + concurrency)
+      this.#logDebug(`处理并发块 ${i}-${i + chunk.length}/${entries.length}`)
+
+      try {
+        const chunkResults = await Promise.allSettled(
+          chunk.map((entry) => {
+            this.#checkMemoryUsage()
+            return processor(entry)
+          })
+        )
+
+        // 处理结果，过滤掉失败的项
+        const validResults = chunkResults
+          .filter((result) => result.status === 'fulfilled')
+          .map((result) => result.value)
+          .filter(Boolean)
+
+        results.push(...validResults)
+
+        // 记录失败的项
+        chunkResults
+          .filter((result) => result.status === 'rejected')
+          .forEach((result) => {
+            this.#logError('处理失败:', result.reason)
+          })
+      } catch (error) {
+        this.#logError(`处理并发块 ${i}-${i + chunk.length} 失败:`, error)
+      }
+    }
+    return results
+  }
+
+  // ==================== 数据处理 ====================
+  /**
+   * 多阶段排序算法(优先级从高到低):
+   * 1. 特殊文件优先 → 2. 用户优先级 → 3. 目录类型 → 4. Frontmatter → 5. 中文排序
+   * @param {Array<object>} nodes - 待排序节点数组,包含目录和文件对象
+   * @returns {Array<object>} 排序后的新数组(原数组不会被修改)
+   * @example
+   * // 排序规则优先级示例:
+   * 1. index.md > guide.md > [priority列表] > 目录 > 文件 > order值 > 中文名
+   * 2. priority列表中存在"api.md"时:api.md > 其他文件
+   * 3. 目录比较:目录A(order=5) > 目录B(order=3) > 文件C(order=0)
+   */
+  #sortNodes(nodes) {
+    const {priority, order} = this.#config.sorting
+    const priorityMap = new Map(priority.map((p, i) => [p.toLowerCase(), i]))
+    return nodes.sort((a, b) => {
+      // 预处理文件名小写转换
+      const aName = a.name.toLowerCase()
+      const bName = b.name.toLowerCase()
+      // 阶段1:特殊文件排序(配置项:sorting.order.index/guide)
+      // ----------------------------------------
+      // 特殊文件定义:index.md(权重0) 和 guide.md(权重1)
+      const specialOrder = {'index.md': 0, 'guide.md': 1}
+      const aSpecial = specialOrder[aName] ?? Infinity
+      const bSpecial = specialOrder[bName] ?? Infinity
+      if (aSpecial !== bSpecial) return aSpecial - bSpecial
+      // 阶段2:用户自定义优先级(配置项:sorting.priority[])
+      // ----------------------------------------
+      // 优先级规则:
+      // 1. 列表中的项目按配置顺序排序
+      // 2. 列表项优先级高于非列表项
+      const aPriority = priorityMap.get(aName)
+      const bPriority = priorityMap.get(bName)
+      if (aPriority !== undefined || bPriority !== undefined) {
+        return (aPriority ?? Infinity) - (bPriority ?? Infinity)
+      }
+      // 阶段3:目录类型优先(配置项:sorting.order.dir > file)
+      // ----------------------------------------
+      // 类型比较规则:目录始终排在文件前面(与配置值无关,由类型决定)
+      if (a.type !== b.type) return b.type === 'directory' ? 1 : -1
+      // 阶段4:Frontmatter排序(配置兜底:sorting.order.file)
+      // ----------------------------------------
+      // order值规则:
+      // 1. 优先使用文档frontmatter中的order字段
+      // 2. 未设置时使用sorting.order.file的默认值
+      const aOrder = a.frontmatter?.order ?? order.file
+      const bOrder = b.frontmatter?.order ?? order.file
+      // 阶段5:中文文件名自然序(locale=zh-CN)
+      // ----------------------------------------
+      // 排序特性:
+      // 1. 支持汉字拼音排序(非拼音首字母)
+      // 2. 自动处理数字自然序(如:第2章 > 第10章)
+      // 3. 忽略大小写(已统一转为小写)
+      return aOrder - bOrder || a.name.localeCompare(b.name, 'zh-CN', {numeric: true})
+    })
+  }
+
+  /**
+   * 路径排除规则
+   * @param {string} fullPath - 完整路径
+   * @param {string[]} excludeList - 排除规则列表
+   * @returns {boolean} 是否应该排除该路径
+   */
+  #shouldExclude(fullPath, excludeList) {
+    const cacheKey = `${fullPath}|${excludeList.join(',')}`
+    if (this.#excludeCache.has(cacheKey)) {
+      return this.#excludeCache.get(cacheKey)
+    }
+    const normalized = `${fullPath.replace(/\\/g, '/').toLowerCase()}/`
+    const result = excludeList.some((ex) => {
+      const pattern = ex.replace(/\\/g, '/').toLowerCase()
+      return normalized.includes(`${pattern}/`) || normalized.endsWith(pattern)
+    })
+    this.#excludeCache.set(cacheKey, result)
+    return result
+  }
+
+  /**
+   * 文件类型校验
+   * @param {fs.Dirent} entry - 文件入口
+   * @returns {boolean} 是否为 Markdown 文件
+   */
+  #isMarkdownFile(entry) {
+    return entry.isFile() && typeof entry.name === 'string' && path.extname(entry.name) === '.md'
+  }
+
+  // ==================== 配置系统 ====================
+  /**
+   * 路径优化
+   * @param {string[]} paths - 路径列表
+   * @returns {string[]} 去重后的路径列表
+   */
+  #deduplicateNestedPaths(paths) {
+    // 按路径深度升序排列(父目录在前)
+    const sorted = paths.map((p) => path.normalize(p)).sort((a, b) => a.split(path.sep).length - b.split(path.sep).length)
+    return sorted.filter((currentPath, index, array) => {
+      // 检查是否被前面的路径(父目录)包含
+      return !array.slice(0, index).some((parentPath) => {
+        const relative = path.relative(parentPath, currentPath)
+        // 判断是否为子路径:relative不包含..且不是绝对路径
+        return !relative.startsWith('..') && !path.isAbsolute(relative)
+      })
+    })
+  }
+
+  /**
+   * 路径校验
+   * @throws {FileTreeError} 当路径无效时抛出错误
+   * @private
+   */
+  #validatePaths() {
+    this.#config.dirs.forEach(({include}) => {
+      include.forEach((p) => {
+        const absPath = path.resolve(this.#config.srcDir, p)
+        if (!existsSync(absPath)) {
+          throw new FileTreeError(`路径不存在: ${absPath}`, 'PATH_NOT_FOUND')
+        }
+        if (!statSync(absPath).isDirectory()) {
+          throw new FileTreeError(`必须为目录: ${absPath}`, 'NOT_A_DIRECTORY')
+        }
+        if (!absPath.startsWith(this.#config.srcDir)) {
+          throw new FileTreeError(`路径越界: ${absPath}`, 'PATH_OUT_OF_BOUNDS')
+        }
+      })
+    })
+  }
+
+  // ==================== 支撑系统 ====================
+  /**
+   * 统计计数
+   * @param {string} type - 统计类型
+   * @param {number} [size] - 文件大小
+   */
+  #updateStats(type, size = 0) {
+    this.#stats[type]++
+    if (size) this.#stats.size += size
+  }
+
+  // 统计重置
+  #resetStats() {
+    this.#stats = {start: Date.now(), dirs: 0, files: 0, size: 0, depths: []}
+  }
+
+  /**
+   * 检查内存使用
+   * @throws {FileTreeError} 当内存使用超过限制时抛出错误
+   */
+  #checkMemoryUsage() {
+    const currentMemory = process.memoryUsage().heapUsed
+    this.#memoryUsage = currentMemory - this.#startMemory
+
+    if (this.#memoryUsage > this.#config.memoryLimit) {
+      throw new FileTreeError(`内存使用超过限制: ${this.#formatBytes(this.#memoryUsage)} > ${this.#formatBytes(this.#config.memoryLimit)}`, 'MEMORY_LIMIT_EXCEEDED', {
+        current: this.#memoryUsage,
+        limit: this.#config.memoryLimit,
+      })
+    }
+  }
+
+  /**
+   * 格式化字节数
+   * @param {number} bytes - 字节数
+   * @returns {string} 格式化后的字符串
+   */
+  #formatBytes(bytes) {
+    const units = ['B', 'KB', 'MB', 'GB']
+    let value = bytes
+    for (const unit of units) {
+      if (value < 1024) return `${value.toFixed(2)} ${unit}`
+      value /= 1024
+    }
+    return `${value.toFixed(2)} TB`
+  }
+
+  // 优化后的统计报告
+  #printStats(results) {
+    const totalTime = Date.now() - this.#stats.start
+    const avgDepth = this.#stats.depths.reduce((a, b) => a + b, 0) / (this.#stats.depths.length || 1)
+
+    if (this.#config.debug) {
+      console.log(`
+      ================= 生成报告 =================
+      根目录: ${this.#config.srcDir}
+      总耗时: ${totalTime}ms
+      处理效率: ${(this.#stats.files / (totalTime / 1000)).toFixed(2)} 文件/秒
+      内存使用: ${this.#formatBytes(this.#memoryUsage)}
+
+      目录统计:
+          → 处理数量: ${this.#stats.dirs}
+          → 平均深度: ${avgDepth.toFixed(2)}
+          → 最大深度: ${Math.max(...this.#stats.depths, 0)}
+
+      文件统计:
+          → 处理数量: ${this.#stats.files}
+          → 总大小: ${this.#formatBytes(this.#stats.size)}
+          → 平均大小: ${this.#formatBytes(this.#stats.size / (this.#stats.files || 1))}
+      ============================================
+      `)
+    }
+    return results
+  }
+
+  // ==================== 日志管理 ====================
+  /**
+   * 错误日志
+   * @param {...any} args - 日志参数
+   */
+  #logError(...args) {
+    console.error('[ERROR]', ...args)
+  }
+
+  /**
+   * 调试日志
+   * @param {...any} args - 日志参数
+   */
+  #logDebug(...args) {
+    if (this.#config.debug) console.log('[DEBUG]', ...args)
+  }
+
+  /**
+   * 统一错误处理
+   * @param {string} context - 错误上下文
+   * @param {Error} error - 错误对象
+   * @returns {TreeNode|null} 错误节点或 null
+   */
+  #handleError(context, error) {
+    this.#logError(`${context}:`, error.message)
+    if (context.startsWith('目录')) {
+      const pathParts = context.split(' ')
+      return {
+        type: 'directory',
+        name: path.basename(pathParts[1]),
+        parent: this.#getRelativePath(path.dirname(pathParts[1])),
+        error: error.message,
+        stats: {
+          mtime: new Date(),
+          ctime: new Date(),
+        },
+      }
+    }
+    return null
+  }
+
+  // ==================== 工具库 ====================
+  /**
+   * 路径转换
+   * @param {string} fullPath - 完整路径
+   * @returns {string} 相对路径
+   */
+  #getRelativePath(fullPath) {
+    const relativePath = path.relative(this.#config.srcDir, fullPath)
+    return relativePath
+  }
+
+  /**
+   * 获取目录名
+   * @param {string} dir - 目录路径
+   * @returns {string} 目录名
+   */
+  #getDirNameByPath(dir) {
+    return dir.substring(dir.lastIndexOf(path.sep) + 1)
+  }
+}

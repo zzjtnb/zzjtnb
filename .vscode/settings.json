@@ -1,0 +1,136 @@
+{
+  "npm.packageManager": "pnpm",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "antfu",
+    "Attributify",
+    "brotli",
+    "CMYK",
+    "icones",
+    "IIRC",
+    "lintstagedrc",
+    "pinia",
+    "tsbuildinfo",
+    "tsnd",
+    "typescripttolua",
+    "unocss",
+    "unplugin",
+    "unref",
+    "vitepress",
+    "vueuse",
+    "Windi",
+    "zzjtnb"
+  ],
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  // ========================== 搜索忽略 ==========================
+  "search.exclude": {
+    "**/.git": true,
+    "**/*.svg": true,
+    "**/dist/**": true,
+    "**/.vscode": true,
+    "**/node_modules": true,
+    "**/.pnpm": true,
+    "**/.yarn": true,
+    "**/yarn.lock": true,
+    "**/package-lock.json": true,
+    "**/pnpm-lock.yaml": true
+  },
+  // ========== 文件嵌套 ==========
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "${capture}.g.dart",
+    "*.css": "$(capture).css.map, $(capture).*.css",
+    "*.js": "$(capture).js.map, $(capture).*.js, $(capture)_*.js",
+    "*.ts": "$(capture).js, $(capture).d.ts.map, $(capture).*.ts, $(capture)_*.js, $(capture)_*.ts",
+    "*.mjs": "$(capture).mjs.map, $(capture).*.mjs, $(capture)_*.mjs",
+    "*.cjs": "$(capture).cjs.map, $(capture).*.cjs, $(capture)_*.cjs",
+    "*.vue": "$(capture).*.ts, $(capture).*.js, $(capture).story.vue",
+    ".env": "*.env, .env.*, .envrc, env.d.ts",
+    ".gitignore": ".gitattributes, .gitmodules, .gitmessage, .mailmap, .git-blame*",
+    "dockerfile": ".dockerignore, docker-compose.*, dockerfile*",
+    "shims.d.ts": "*.d.ts",
+    "vite.config.*": "*.env, .babelrc*, .env.*, babel.config.*, env.d.ts, jsconfig.*,  playwright.config.*, postcss.config.*, tsconfig.*, vitest.config.*, webpack.config.* ",
+    "vue.config.*": "*.env, .babelrc*, .env.*, babel.config.*, env.d.ts, jsconfig.*,  playwright.config.*, postcss.config.*, tailwind.config.*, tsconfig.*, vitest.config.*, webpack.config.*",
+    "nuxt.config.*": "*.env, .babelrc*, .env.*, env.d.ts, jsconfig.*, playwright.config.*, postcss.config.*, tailwind.config.*, tsconfig.*, vitest.config.*",
+    "package.json": ".browserslist*, .commitlint*, .cz-config.js, .editorconfig, .eslint*, .github*, .nodemon*, .npm*, .nvmrc, .pm2*, .pnpm*, .prettier*, .vscode*, .yamllint*, .yarnrc*, gulp*, lint-staged*,package-lock.json, pm2.*, pnpm*, prettier*, stylelint*, eslint*, typedoc*, webpack*, workspace.json, yarn*",
+    "pubspec.yaml": ".metadata, .packages, all_lint_rules.yaml, analysis_options.yaml, build.yaml, pubspec.lock, pubspec_overrides.yaml"
+  },
+
+  "stylelint.packageManager": "pnpm",
+  // 指定要验证的文件
+  "stylelint.validate": [
+    "css",
+    "scss",
+    "vue",
+    "html",
+    "xml",
+    "svelte",
+    "astro",
+    "php",
+    "markdown"
+  ],
+  // "eslint.debug": true,
+  "css.customData": [
+    "@apply"
+  ],
+
+  // Disable the default formatter, use eslint instead
+  // "prettier.enable": false,
+  // "editor.formatOnSave": false,
+
+  // Auto fix
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit",
+    "source.organizeImports": "never"
+  },
+
+  // Silent the stylistic rules in you IDE, but still auto fix them
+  "eslint.rules.customizations": [
+    { "rule": "style/*", "severity": "off", "fixable": true },
+    { "rule": "format/*", "severity": "off", "fixable": true },
+    { "rule": "*-indent", "severity": "off", "fixable": true },
+    { "rule": "*-spacing", "severity": "off", "fixable": true },
+    { "rule": "*-spaces", "severity": "off", "fixable": true },
+    { "rule": "*-order", "severity": "off", "fixable": true },
+    { "rule": "*-dangle", "severity": "off", "fixable": true },
+    { "rule": "*-newline", "severity": "off", "fixable": true },
+    { "rule": "*quotes", "severity": "off", "fixable": true },
+    { "rule": "*semi", "severity": "off", "fixable": true }
+  ],
+
+  // Enable eslint for all supported languages
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "json5",
+    "jsonc",
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro",
+    "svelte",
+    "css",
+    "less",
+    "scss",
+    "pcss",
+    "postcss"
+  ]
+}

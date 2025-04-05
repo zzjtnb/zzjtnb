@@ -1,0 +1,310 @@
+// markdownlint 配置示例，所有属性均设置为默认值
+{
+
+  // 所有规则的默认状态
+  "default": true,
+
+  // 要扩展的配置文件路径
+  "extends": null,
+
+  // MD001/heading-increment : 标题级别应该只增加一级 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md001.md
+  "MD001": true,
+
+  // MD003/heading-style : 标题样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md003.md
+  "MD003": {
+    // 标题样式
+    "style": "consistent"
+  },
+
+  // MD004/ul-style : 无序列表样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md004.md
+  "MD004": {
+    // 列表样式
+    "style": "consistent"
+  },
+
+  // MD005/list-indent : 同级列表项的缩进不一致 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md005.md
+  "MD005": true,
+
+  // MD007/ul-indent : 无序列表缩进 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md007.md
+  "MD007": {
+    // 缩进空格数
+    "indent": 2,
+    // 是否缩进第一级列表
+    "start_indented": false,
+    // 第一级缩进的空格数（当 start_indented 设置为 true 时）
+    "start_indent": 2
+  },
+
+  // MD009/no-trailing-spaces : 行尾空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md009.md
+  "MD009": {
+    // 换行的空格数
+    "br_spaces": 2,
+    // 允许列表项中空行的空格
+    "list_item_empty_lines": false,
+    // 包括不必要的换行
+    "strict": false
+  },
+
+  // MD010/no-hard-tabs : 硬制表符 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md010.md
+  "MD010": {
+    // 包括代码块
+    "code_blocks": true,
+    // 忽略的代码块语言
+    "ignore_code_languages": [],
+    // 每个硬制表符的空格数
+    "spaces_per_tab": 1
+  },
+
+  // MD011/no-reversed-links : 反转的链接语法 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md011.md
+  "MD011": true,
+
+  // MD012/no-multiple-blanks : 多个连续空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md012.md
+  "MD012": {
+    // 连续空行数
+    "maximum": 1
+  },
+
+  // MD013/line-length : 行长度 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md013.md
+  "MD013": {
+    // 字符数
+    "line_length": 80,
+    // 标题的字符数
+    "heading_line_length": 80,
+    // 代码块的字符数
+    "code_block_line_length": 80,
+    // 包括代码块
+    "code_blocks": true,
+    // 包括表格
+    "tables": true,
+    // 包括标题
+    "headings": true,
+    // 严格长度检查
+    "strict": false,
+    // 严厉长度检查
+    "stern": false
+  },
+
+  // MD014/commands-show-output : 命令前使用美元符号但不显示输出 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md014.md
+  "MD014": true,
+
+  // MD018/no-missing-space-atx : ATX 样式标题的井号后缺少空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md018.md
+  "MD018": true,
+
+  // MD019/no-multiple-space-atx : ATX 样式标题的井号后有多个空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md019.md
+  "MD019": true,
+
+  // MD020/no-missing-space-closed-atx : 闭合式 ATX 标题的井号内缺少空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md020.md
+  "MD020": true,
+
+  // MD021/no-multiple-space-closed-atx : 闭合式 ATX 标题的井号内有多个空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md021.md
+  "MD021": true,
+
+  // MD022/blanks-around-headings : 标题前后应有空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md022.md
+  "MD022": {
+    // 标题上方的空行数
+    "lines_above": 1,
+    // 标题下方的空行数
+    "lines_below": 1
+  },
+
+  // MD023/heading-start-left : 标题必须从行首开始 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md023.md
+  "MD023": true,
+
+  // MD024/no-duplicate-heading : 内容相同的多个标题 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md024.md
+  "MD024": {
+    // 仅检查同级标题
+    "siblings_only": false
+  },
+
+  // MD025/single-title/single-h1 : 同一文档中有多个顶级标题 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md025.md
+  "MD025": {
+    // 标题级别
+    "level": 1,
+    // 匹配前置元数据中标题的正则表达式
+    "front_matter_title": "^\\s*title\\s*[:=]"
+  },
+
+  // MD026/no-trailing-punctuation : 标题中的尾随标点符号 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md026.md
+  "MD026": {
+    // 标点符号
+    "punctuation": ".,;:!。，；：！"
+  },
+
+  // MD027/no-multiple-space-blockquote : 引用符号后有多个空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md027.md
+  "MD027": true,
+
+  // MD028/no-blanks-blockquote : 引用块内的空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md028.md
+  "MD028": true,
+
+  // MD029/ol-prefix : 有序列表项前缀 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md029.md
+  "MD029": {
+    // 列表样式
+    "style": "one_or_ordered"
+  },
+
+  // MD030/list-marker-space : 列表标记后的空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md030.md
+  "MD030": {
+    // 单行无序列表项的空格数
+    "ul_single": 1,
+    // 单行有序列表项的空格数
+    "ol_single": 1,
+    // 多行无序列表项的空格数
+    "ul_multi": 1,
+    // 多行有序列表项的空格数
+    "ol_multi": 1
+  },
+
+  // MD031/blanks-around-fences : 围栏式代码块前后应有空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md031.md
+  "MD031": {
+    // 包括列表项
+    "list_items": true
+  },
+
+  // MD032/blanks-around-lists : 列表前后应有空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md032.md
+  "MD032": true,
+
+  // MD033/no-inline-html : 内联 HTML : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md033.md
+  "MD033": {
+    // 允许的元素
+    "allowed_elements": []
+  },
+
+  // MD034/no-bare-urls : 使用裸 URL : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md034.md
+  "MD034": true,
+
+  // MD035/hr-style : 水平线样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md035.md
+  "MD035": {
+    // 水平线样式
+    "style": "consistent"
+  },
+
+  // MD036/no-emphasis-as-heading : 使用强调代替标题 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md036.md
+  "MD036": {
+    // 标点符号
+    "punctuation": ".,;:!?。，；：！？"
+  },
+
+  // MD037/no-space-in-emphasis : 强调标记内的空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md037.md
+  "MD037": true,
+
+  // MD038/no-space-in-code : 代码段元素内的空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md038.md
+  "MD038": true,
+
+  // MD039/no-space-in-links : 链接文本内的空格 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md039.md
+  "MD039": true,
+
+  // MD040/fenced-code-language : 围栏式代码块应指定语言 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md040.md
+  "MD040": {
+    // 语言列表
+    "allowed_languages": [],
+    // 仅要求语言
+    "language_only": false
+  },
+
+  // MD041/first-line-heading/first-line-h1 : 文件的第一行应是顶级标题 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md041.md
+  "MD041": {
+    // 标题级别
+    "level": 1,
+    // 匹配前置元数据中标题的正则表达式
+    "front_matter_title": "^\\s*title\\s*[:=]"
+  },
+
+  // MD042/no-empty-links : 无空链接 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md042.md
+  "MD042": true,
+
+  // MD043/required-headings : 必需的标题结构 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md043.md
+  "MD043": {
+    // 标题列表
+    "headings": [],
+    // 匹配标题的大小写
+    "match_case": false
+  },
+
+  // MD044/proper-names : 专有名词应有正确的大小写 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md044.md
+  "MD044": {
+    // 专有名词列表
+    "names": [],
+    // 包括代码块
+    "code_blocks": true,
+    // 包括 HTML 元素
+    "html_elements": true
+  },
+
+  // MD045/no-alt-text : 图片应有替代文本（alt 文本） : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md045.md
+  "MD045": true,
+
+  // MD046/code-block-style : 代码块样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md046.md
+  "MD046": {
+    // 块样式
+    "style": "consistent"
+  },
+
+  // MD047/single-trailing-newline : 文件应以单个换行符结束 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md047.md
+  "MD047": true,
+
+  // MD048/code-fence-style : 代码围栏样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md048.md
+  "MD048": {
+    // 代码围栏样式
+    "style": "consistent"
+  },
+
+  // MD049/emphasis-style : 强调样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md049.md
+  "MD049": {
+    // 强调样式
+    "style": "consistent"
+  },
+
+  // MD050/strong-style : 加粗样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md050.md
+  "MD050": {
+    // 加粗样式
+    "style": "consistent"
+  },
+
+  // MD051/link-fragments : 链接片段应有效 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md051.md
+  "MD051": {
+    // 忽略片段的大小写
+    "ignore_case": false
+  },
+
+  // MD052/reference-links-images : 引用链接和图片应使用已定义的标签 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md052.md
+  "MD052": {
+    // 包括快捷语法
+    "shortcut_syntax": false
+  },
+
+  // MD053/link-image-reference-definitions : 链接和图片引用定义应是必需的 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md053.md
+  "MD053": {
+    // 忽略的定义
+    "ignored_definitions": [
+      "//"
+    ]
+  },
+
+  // MD054/link-image-style : 链接和图片样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md054.md
+  "MD054": {
+    // 允许自动链接
+    "autolink": true,
+    // 允许内联链接和图片
+    "inline": true,
+    // 允许完整引用链接和图片
+    "full": true,
+    // 允许折叠引用链接和图片
+    "collapsed": true,
+    // 允许快捷引用链接和图片
+    "shortcut": true,
+    // 允许 URL 作为内联链接
+    "url_inline": true
+  },
+
+  // MD055/table-pipe-style : 表格管道样式 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md055.md
+  "MD055": {
+    // 表格管道样式
+    "style": "consistent"
+  },
+
+  // MD056/table-column-count : 表格列数 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md056.md
+  "MD056": true,
+
+  // MD058/blanks-around-tables : 表格前后应有空行 : https://github.com/DavidAnson/markdownlint/blob/v0.37.4/doc/md058.md
+  "MD058": true
+}

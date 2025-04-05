@@ -1,0 +1,18 @@
+# 忽略 node_modules 文件夹
+node_modules/
+
+# 忽略 VitePress 临时或缓存文件夹
+.cache/
+# git rm -r --cached **/.vitepress/cache/
+
+# 如果使用 CI/CD 工具(如 GitHub Actions)自动构建和部署项目文件夹应在每次构建时重新生成,因此不需要提交到仓库
+# 如果没有使用 CI/CD 工具,而是选择在本地手动构建后部署,那么 ./docs/.vitepress/dist/ 文件夹需要提交到仓库,以便部署时使用.因此,不应将该文件夹添加到 .gitignore 文件中.
+# docs/.vitepress/dist/
+dist
+
+# 忽略测试文件
+test/
+# 不忽略
+!/src/components/test
+# 忽略编辑器临时文件
+.cursor

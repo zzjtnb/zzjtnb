@@ -1,0 +1,26 @@
+/**
+ *拓展默认主题
+ * 默认主题 CSS 变量
+ * @see
+ * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
+ * @property --vp-c-brand-1 - 主题颜色 1
+ * @property --vp-c-brand-2 - 主题颜色 2
+ */
+
+ @import '../fonts/CooperZhengKai/result.css';
+
+:root {
+  --vp-c-brand-1: #646cff;
+  --vp-c-brand-2: #747bff;
+
+  /* .vitepress/theme/styles/fonts.css */
+  // --vp-font-family-base:"LXGW WenKai", cursive; /* normal text font */
+  // --vp-font-family-mono: /* code font */
+
+  // --vp-code-block-bg:'#333'
+}
+
+
+// .vp-doc div[class*='language-']{
+//   background: #222;
+// }
