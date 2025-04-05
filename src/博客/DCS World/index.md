@@ -1,6 +1,6 @@
 # DCS World 飞行模拟指南
 
-![DCS World Logo](图片路径/dcs_logo.png)
+<!-- ![DCS World Logo](图片路径/dcs_logo.png) -->
 
 ## 入门指南
 

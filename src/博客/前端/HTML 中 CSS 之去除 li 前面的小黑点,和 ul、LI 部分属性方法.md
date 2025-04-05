@@ -1,17 +1,131 @@
 ---
-title: Html中CSS之去除li前面的小黑点,和ul、LI部分属性方法
+title: HTML中CSS之去除li前面的小黑点和ul、li部分属性方法
 category: 前端
 tags:
-  - css
+  - CSS
+  - HTML
+  - 列表样式
 cover: https://cdn.pixabay.com/photo/2020/06/02/05/39/barley-5249498_960_720.jpg
 ---
 
-<article class="baidu_pl">
-                <div id="article_content" class="article_content clearfix">
-                                    <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-d284373521.css">
-                                        <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-d284373521.css">
-                <div class="htmledit_views" id="content_views">
+# HTML中CSS之去除li前面的小黑点和ul、li部分属性方法
 
-<pre><code class="language-css hljs"><ol class="hljs-ln" style="width:1237px"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">对于很多人用<span class="hljs-selector-tag">div</span>来做网站时，总会用到，但在显示效果时前面总是会有一个小黑点，这个令很多人头痛，但又找不到要源，其它我们可以用以下方法来清除。</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">1、在<span class="hljs-selector-tag">CSS</span>中写入代码。找到相关性的<span class="hljs-selector-tag">CSS</span>，在。<span class="hljs-selector-class">.li</span>和<span class="hljs-selector-class">.ul</span>下写入<span class="hljs-selector-tag">list-sytle</span><span class="hljs-selector-pseudo">:none</span>;当然有的会这样来写<span class="hljs-selector-tag">list-style-type</span><span class="hljs-selector-pseudo">:none</span>, 这种写法特别是在一些<span class="hljs-selector-tag">CMS</span>中最常见。</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">2、在相关的页面找到<span class="hljs-selector-tag">head</span>部分写入下面的代码</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">&lt;<span class="hljs-selector-tag">style</span> <span class="hljs-selector-tag">type</span>="<span class="hljs-selector-tag">text</span>/<span class="hljs-selector-tag">css</span>"&gt;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">list-style</span><span class="hljs-selector-pseudo">:none</span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">&lt;/<span class="hljs-selector-tag">style</span>&gt;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">3、在<span class="hljs-selector-tag">li</span>,<span class="hljs-selector-tag">ul</span>内加入<span class="hljs-selector-tag">list-style</span>。如&lt;<span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">style</span>="<span class="hljs-selector-tag">list-style-type</span><span class="hljs-selector-pseudo">:none</span>&gt;&lt;<span class="hljs-selector-tag">li</span>&gt;&lt;<span class="hljs-selector-tag">a</span> <span class="hljs-selector-tag">herf</span>="<span class="hljs-selector-tag">http</span>://<span class="hljs-selector-tag">blog</span><span class="hljs-selector-class">.csdn</span><span class="hljs-selector-class">.net</span>/<span class="hljs-selector-tag">business122</span>"&gt;我的博客&lt;/<span class="hljs-selector-tag">a</span>&gt;&lt;/<span class="hljs-selector-tag">li</span>&gt;&lt; /<span class="hljs-selector-tag">ul</span>&gt; 当然这种是很麻烦的了。</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">最简单的就是第一种了，通过<span class="hljs-selector-tag">CSS</span>来控制，这个当然会有不错的效果了。</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="9"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">这几种方法都是通过设置<span class="hljs-selector-tag">list-style</span><span class="hljs-selector-pseudo">:none</span>来设置的，有的是会用<span class="hljs-selector-tag">list-style-type</span>，下面我们来看一看它的属性.</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="10"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">none</span>不使用项目符号</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="11"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">disc</span>实心圆，默认值</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="12"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">circle</span>空心圆</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="13"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">square</span>实心方块</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="14"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">decimal</span>阿拉伯数字</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="15"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">lower-roman</span>小写罗马数字</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="16"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">upper-roman</span>大写罗马数字</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="17"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">lower-alpha</span>小写英文字母</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="18"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">upper-alpha</span>大写英文字母</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="19"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">这些都可以来代替上文中的<span class="hljs-selector-tag">none</span>,想要什么样的都会有一个相应的对应。</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="20"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="21"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> <span class="hljs-selector-tag">A</span>).运用<span class="hljs-selector-tag">CSS</span>格式化列表符： <span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">li</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="22"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-type</span>:none;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="23"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="24"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">B</span>).如果你想将列表符换成图像，则： <span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">li</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="25"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-type</span>:none;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="26"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-image</span>: <span class="hljs-built_in">url</span>(images/icon.gif);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="27"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="28"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">C</span>).为了左对齐，可以用如下代码： <span class="hljs-selector-tag">ul</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="29"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-type</span>:none;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="30"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="31"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="32"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">D</span>).如果想给列表加背景色，可以用如下代码： <span class="hljs-selector-tag">ul</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="33"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-type</span>: none;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="34"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="35"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="36"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">li</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="37"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">background</span>:<span class="hljs-number">#CCC</span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="38"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="39"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">E</span>).如果想给列表加<span class="hljs-selector-tag">MOUSEOVER</span>背景变色效果，可以用如下代码： <span class="hljs-selector-tag">ul</span>{ <span class="hljs-attribute">list-style-type</span>: none; <span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>; }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="40"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">li</span> <span class="hljs-selector-tag">a</span>{ <span class="hljs-attribute">display</span>:block; <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>; <span class="hljs-attribute">background</span>:<span class="hljs-number">#ccc</span>; }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="41"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">ul</span> <span class="hljs-selector-tag">li</span> <span class="hljs-selector-tag">a</span><span class="hljs-selector-pseudo">:hover</span>{ <span class="hljs-attribute">background</span>:<span class="hljs-number">#999</span>; }说明：<span class="hljs-selector-tag">display</span><span class="hljs-selector-pseudo">:block</span>;这一行必须要加的，这样才能块状显示！</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="42"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="43"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-selector-tag">F</span>)<span class="hljs-selector-class">.LI</span>中的元素水平排列,关键<span class="hljs-selector-tag">FLOAT</span><span class="hljs-selector-pseudo">:LEFT</span>： <span class="hljs-selector-tag">ul</span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="44"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">list-style-type</span>:none;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="45"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-attribute">width</span>:<span class="hljs-number">100%</span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="46"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="47"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li></ol></code><div class="hljs-button signin" data-title="登录后复制" onclick="hljs.signin(event)"></div></pre><br>                                    </div>
-                    </div>
-    </article>
+对于很多人用div来做网站时，总会用到列表，但在显示效果时前面总是会有一个小黑点，这个令很多人头痛，但又找不到要源，我们可以用以下方法来清除。
+
+## 清除列表项目符号的方法
+
+### 1. 在CSS中写入代码
+
+找到相关性的CSS，在 `.li` 和 `.ul` 下写入 `list-style:none;` 当然有的会这样来写 `list-style-type:none`，这种写法特别是在一些CMS中最常见。
+
+### 2. 在页面head部分写入代码
+
+```html
+<style type="text/css">
+  list-style:none;
+</style>
+```
+
+### 3. 在li、ul标签内添加样式
+
+```html
+<ul style="list-style-type:none">
+  <li><a href="http://blog.csdn.net/business122">我的博客</a></li>
+</ul>
+```
+
+当然这种是很麻烦的了。最简单的就是第一种了，通过CSS来控制，这个当然会有不错的效果了。
+
+## 列表样式属性值
+
+这几种方法都是通过设置 `list-style:none` 来设置的，有的是会用 `list-style-type`，下面我们来看一看它的属性。
+
+- `none`：不使用项目符号
+- `disc`：实心圆，默认值
+- `circle`：空心圆
+- `square`：实心方块
+- `decimal`：阿拉伯数字
+- `lower-roman`：小写罗马数字
+- `upper-roman`：大写罗马数字
+- `lower-alpha`：小写英文字母
+- `upper-alpha`：大写英文字母
+
+这些都可以来代替上文中的 `none`，想要什么样的都会有一个相应的对应。
+
+## 列表样式实用技巧
+
+### A. 运用CSS格式化列表符
+
+```css
+ul li {
+  list-style-type: none;
+}
+```
+
+### B. 将列表符换成图像
+
+```css
+ul li {
+  list-style-image: url("images/icon.gif");
+  list-style-type: none;
+}
+```
+
+### C. 左对齐列表
+
+```css
+ul {
+  margin: 0;
+  list-style-type: none;
+}
+```
+
+### D. 给列表添加背景色
+
+```css
+ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+ul li {
+  background: #CCC;
+}
+```
+
+### E. 给列表添加鼠标悬停背景变色效果
+
+```css
+ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+ul li a {
+  display: block;
+  width: 100%;
+  background: #ccc;
+}
+
+ul li a:hover {
+  background: #999;
+}
+```
+
+说明：`display:block;` 这一行必须要加的，这样才能块状显示！
+
+### F. 列表元素水平排列
+
+关键点是使用 `float:left`：
+
+```css
+ul {
+  width: 100%;
+  list-style-type: none;
+}
+
+ul li {
+  margin-right: 10px;
+  float: left;
+}
+```

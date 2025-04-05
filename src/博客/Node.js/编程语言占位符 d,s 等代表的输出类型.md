@@ -14,7 +14,7 @@ let userInfo={"name":"zhangsasn","age":20};
 console.log("姓名: %s, 年龄: %s", userInfo.name, userInfo.age);
 ```
 
-* `format` [<string>](http://nodejs.cn/s/9Tw2bK) 一个类似 `printf` 的格式字符串。
+* `format` [&lt;string&gt;](http://nodejs.cn/s/9Tw2bK) 一个类似 `printf` 的格式字符串。
 
 `util.format()` 方法返回一个格式化后的字符串，使用第一个参数作为一个类似 `printf` 的格式的字符串，该字符串可以包含零个或多个格式占位符。 每个占位符会被对应参数转换后的值所替换。 支持的占位符有：
 
@@ -27,7 +27,7 @@ console.log("姓名: %s, 年龄: %s", userInfo.name, userInfo.age);
 * `%O` - `Object`。具有通用 JavaScript 对象格式的对象的字符串表示形式。 类似于 `util.inspect()` 但没有选项。 这将显示完整对象，不包括非可枚举属性和代理。
 * `%c` - `CSS`。该说明符当前会被忽略，将会跳过任何传入的 CSS。
 * `%%` - 单个百分号（`'%'`）。这不会消耗参数。
-* 返回: [<string>](http://nodejs.cn/s/9Tw2bK) 格式化的字符串。
+* 返回: [&lt;string&gt;](http://nodejs.cn/s/9Tw2bK) 格式化的字符串。
 
 如果占位符没有对应的参数，则占位符不被替换。
 

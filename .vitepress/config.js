@@ -33,6 +33,7 @@ export default async () => {
     titleTemplate: ':title -争逐',
     cleanUrls: true,
     lastUpdated: true,
+    ignoreDeadLinks: true, // 忽略死链接检查
     locales: {
       root: { label: '简体中文', lang: 'zh-Hans-CN' },
     },

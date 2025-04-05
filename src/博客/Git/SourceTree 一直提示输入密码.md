@@ -49,7 +49,7 @@ SourceTree  拉取代码会弹出`git-credential-osxkeychain`想要使用你储�
 
 今天给自己提了一个问题, 当我们在 github.com 或者 gitlab 上面新建仓库, 并克隆到本地, 首次使用的时候, 会被问及用户名密码, 但是这两个信息存在哪里呢?
 
-带着这个问题,我开始搜索,并在[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中读到了完整的解答,但是当我第一次阅读的时候,并没有太清楚它所要表达的意思,于是我不断尝试后,总算是有所明白.
+带着这个问题,我开始搜索,并在[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中读到了完整的解答,但是当我第一次阅读的时候,并没有太清楚它所要表达的意思,于是我不断尝试后,总算是有所明白.
 
 本文就作为一个解读贴, 作为补充.
 
@@ -61,11 +61,11 @@ SSH 协议并不采用这里讨论的凭证存储. 这里重点要描述的其�
 
 为什么会有这个问题呢? 因为 git 使用 HTTP 协议访问远程仓库进行操作的时候, 每个请求, 都需要带着用户名和密码以及一个防止重放攻击的随机码.
 
-所以[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8),就指出,默认情况下每次进行操作的时候,都需要提供用户名和密码.
+所以[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8),就指出,默认情况下每次进行操作的时候,都需要提供用户名和密码.
 
 ### 默认情况下你为什么没有被要求每次都输入用户名密码?
 
-[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中的第一部分,针对这个问题也给出了解释.
+[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中的第一部分,针对这个问题也给出了解释.
 
 如果你是 Mac 系统,git 默认是提供`osxkeychain`辅助程序来管理你的密码, 以至于每次你当你需要提供用户名和密码的时候,`osxkeychain`辅助程序都默默帮你填写了.
 
@@ -193,7 +193,7 @@ localhost:git-credentials xxx$ cat ~/.git-credentials
 https://*.*.*.*
 ```
 
-当然,也可以用[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中提到的`git credential-store --file ~/git.store store`命令来读取了.
+当然,也可以用[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中提到的`git credential-store --file ~/git.store store`命令来读取了.
 
 那么, 使用 Mac 的`osxkeychain`的钥匙串管理, 是否可以拿回密码呢?
 
@@ -208,11 +208,11 @@ password=xxx
 username=xxx
 ```
 
-由这一点可以看出,在[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中提到的`foo`就是这个辅助程序的名字.
+由这一点可以看出,在[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中提到的`foo`就是这个辅助程序的名字.
 
 ## get/store/erase 是什么作用?
 
-从[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)看,这三个均称为 Action,其实也就是从辅助程序获取密码(get)/ 设置密码(store)/ 删除密码(erase).
+从[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)看,这三个均称为 Action,其实也就是从辅助程序获取密码(get)/ 设置密码(store)/ 删除密码(erase).
 
 刚刚的动作中能 get 到密码了, 那么我们尝试删除一下. 执行以下命令试一下:
 
@@ -238,7 +238,7 @@ host=github.com
 
 ### 辅助程序是否可以自己定义呢?
 
-答案当然是肯定的,在[<Pro Git>7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中也提供了 ruby 的示例.
+答案当然是肯定的,在[Pro Git7.14 Git - 工具 - 凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)中也提供了 ruby 的示例.
 
 ### 按部就班: 拿回自己的密码
 
